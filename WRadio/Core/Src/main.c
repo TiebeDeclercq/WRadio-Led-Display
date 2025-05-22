@@ -32,6 +32,11 @@
 TIM_HandleTypeDef htim3;
 DMA_HandleTypeDef hdma_tim3_ch1_trig;
 
+/* Global variables */
+static effect_mode_t currentMode = MODE_STATIC_LOGO;
+static uint32_t lastButtonPress = 0;
+static uint8_t buttonPressed = 0;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -42,6 +47,7 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
+void HandleButtonPress(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -94,36 +100,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  // Test 1: Simple color test
-	      WS2812B_SetLED(0, 50, 0, 0);    // Red
-	      WS2812B_PrepareBuffer();
-	      WS2812B_SendToLEDs();
-	      HAL_Delay(500);
-
-	      WS2812B_SetLED(0, 0, 50, 0);    // Green
-	      WS2812B_PrepareBuffer();
-	      WS2812B_SendToLEDs();
-	      HAL_Delay(500);
-
-	      WS2812B_SetLED(0, 0, 0, 50);    // Blue
-	      WS2812B_PrepareBuffer();
-	      WS2812B_SendToLEDs();
-	      HAL_Delay(500);
-
-	      // Test 2: All LEDs same color
-	      WS2812B_SetAllLED(20, 20, 20);  // White (low brightness)
-	      WS2812B_PrepareBuffer();
-	      WS2812B_SendToLEDs();
-	      HAL_Delay(1000);
-
-	      // Test 3: Rainbow effect
-	      for(int i = 0; i < 50; i++) {
-	        WS2812B_Rainbow(50);
-	      }
-
-	      // Turn off all LEDs
-	      WS2812B_Clear();
-	      HAL_Delay(1000);
+	  HandleButtonPress();
+	  WS2812B_RunEffect(currentMode);
+	  HAL_Delay(1);  /* Small delay for stability */
 
   }
   /* USER CODE END 3 */
@@ -267,6 +246,33 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void HandleButtonPress(void)
+{
+    /* Read button state (PA0) */
+    uint8_t buttonState = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0);
+
+    /* Button press detection with debouncing */
+    if (buttonState == GPIO_PIN_SET && !buttonPressed) {
+        uint32_t currentTime = HAL_GetTick();
+        if (currentTime - lastButtonPress > 200) {  /* 200ms debounce */
+            buttonPressed = 1;
+            lastButtonPress = currentTime;
+
+            /* Switch to next mode */
+            currentMode++;
+            if (currentMode >= MODE_COUNT) {
+                currentMode = MODE_STATIC_LOGO;
+            }
+
+            /* Reset brightness for new mode */
+            WS2812B_SetLogoColors();  /* Reset to base logo */
+        }
+    } else if (buttonState == GPIO_PIN_RESET) {
+        buttonPressed = 0;
+    }
+}
+
 // Add this function to main.c
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 {

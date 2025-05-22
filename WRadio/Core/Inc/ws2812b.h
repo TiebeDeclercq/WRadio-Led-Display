@@ -1,40 +1,58 @@
-/*
- * ws2812b.h
- *
- *  Created on: Apr 17, 2025
- *      Author: tiebe
- */
-
+/* ws2812b.h - Updated with new effects */
 #ifndef SRC_WS2812B_H_
 #define SRC_WS2812B_H_
 
-/* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-/* User configuration ---------------------------------------------------------*/
-#define LED_COUNT       10
-#define WS2812B_BUFFER_SIZE (LED_COUNT * 24 + 50)  // Back to +50
+/* User configuration */
+#define LED_COUNT       76     // Reduced for STM32F030F4 RAM limits
+#define WS2812B_BUFFER_SIZE (LED_COUNT * 24 + 50)
 
-/* Types ---------------------------------------------------------------------*/
+/* WR Logo pixel ranges - back to original */
+#define W_START    0
+#define W_END      20
+#define R_START    20
+#define R_END      28
+
+/* Effect modes */
+typedef enum {
+    MODE_STATIC_LOGO = 0,
+    MODE_BREATHE,
+    MODE_SPARKLE,
+    MODE_WAVE,
+    MODE_PULSE,
+    MODE_RAINBOW,
+    MODE_COUNT
+} effect_mode_t;
+
+/* Color structure */
 typedef struct {
-  uint8_t green;  // Note: WS2812B expects data in GRB order
-  uint8_t red;
-  uint8_t blue;
+    uint8_t green;
+    uint8_t red;
+    uint8_t blue;
 } LED_Color;
 
-/* Function prototypes -------------------------------------------------------*/
+/* Function prototypes */
 void WS2812B_Init(void);
 void WS2812B_SetLED(uint16_t index, uint8_t red, uint8_t green, uint8_t blue);
 void WS2812B_SetAllLED(uint8_t red, uint8_t green, uint8_t blue);
+void WS2812B_Clear(void);
 void WS2812B_PrepareBuffer(void);
 void WS2812B_SendToLEDs(void);
 void WS2812B_TIM_DMADelayPulseFinished(void);
-void WS2812B_Rainbow(uint32_t delay_ms);
-void WS2812B_Fire(uint8_t cooling, uint8_t sparking);
-void WS2812B_SetFromHeatColor(uint16_t ledIndex, uint8_t temperature);
-void WS2812B_Clear(void);
-uint8_t ws_random_byte(uint8_t max);
-uint8_t ws_random_range(uint8_t min, uint8_t max);
 
+/* Logo and effect functions */
+void WS2812B_SetLogoColors(void);
+void WS2812B_BreatheEffect(void);
+void WS2812B_SparkleEffect(void);
+void WS2812B_WaveEffect(void);
+void WS2812B_PulseEffect(void);
+void WS2812B_RainbowEffect(void);
+uint32_t WS2812B_Wheel(uint8_t wheelPos);
+void WS2812B_RunEffect(effect_mode_t mode);
+
+/* Utility functions */
+uint32_t ws_random_byte(uint32_t max);
+uint32_t WS2812B_Color(uint8_t r, uint8_t g, uint8_t b);
 
 #endif /* SRC_WS2812B_H_ */

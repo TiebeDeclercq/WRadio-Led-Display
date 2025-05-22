@@ -1,166 +1,289 @@
-/* ws2812b.c - Fixed Version */
+/* ws2812b.c - Simple version with blue background */
 #include "ws2812b.h"
 #include "main.h"
 #include <string.h>
 #include <stdbool.h>
 
-/* WS2812B protocol timing - Corrected for 48MHz timer, period 59 */
-#define WS2812B_ONE_PULSE   38      // ~0.8us high time
-#define WS2812B_ZERO_PULSE  19      // ~0.4us high time
-#define WS2812B_RESET_LEN   50      // Reset pulse length
+#define WS2812B_ONE_PULSE   38
+#define WS2812B_ZERO_PULSE  19
+#define WS2812B_RESET_LEN   50
 
-// Global variables
+/* Simple approach - keep original LED count */
+#define LED_COUNT 76
+#define WS2812B_BUFFER_SIZE (LED_COUNT * 24 + 50)
+
 uint16_t ledBuffer[WS2812B_BUFFER_SIZE];
-LED_Color ledColors[LED_COUNT];
+uint32_t currentColors[LED_COUNT];
 volatile bool transferComplete = false;
+static uint8_t globalBrightness = 10;
 
-// External HAL handles
+/* Original ranges for 76 LEDs */
+#define W_START 0
+#define W_END 20
+#define R_START 20
+#define R_END 28
+
 extern TIM_HandleTypeDef htim3;
 extern DMA_HandleTypeDef hdma_tim3_ch1_trig;
 
 void WS2812B_Init(void)
 {
-  // Initialize the LED buffer with all LEDs off
-  memset(ledColors, 0, sizeof(ledColors));
-  WS2812B_PrepareBuffer();
-
-  // Turn off all LEDs at startup
-  WS2812B_SendToLEDs();
+    memset(currentColors, 0, sizeof(currentColors));
+    WS2812B_SetLogoColors();
 }
 
-void WS2812B_SetLED(uint16_t index, uint8_t red, uint8_t green, uint8_t blue)
+uint32_t WS2812B_Color(uint8_t r, uint8_t g, uint8_t b)
 {
-  if (index < LED_COUNT) {
-    ledColors[index].red = red;
-    ledColors[index].green = green;
-    ledColors[index].blue = blue;
-  }
-}
-
-void WS2812B_Clear(void)
-{
-  memset(ledColors, 0, sizeof(ledColors));
-  WS2812B_PrepareBuffer();
-  WS2812B_SendToLEDs();
-}
-
-void WS2812B_SetAllLED(uint8_t red, uint8_t green, uint8_t blue)
-{
-  for (uint16_t i = 0; i < LED_COUNT; i++) {
-    ledColors[i].red = red;
-    ledColors[i].green = green;
-    ledColors[i].blue = blue;
-  }
+    r = (r * globalBrightness) / 255;
+    g = (g * globalBrightness) / 255;
+    b = (b * globalBrightness) / 255;
+    return ((uint32_t)r << 16) | ((uint32_t)g << 8) | b;
 }
 
 void WS2812B_PrepareBuffer(void)
 {
-  uint16_t bufferIndex = 0;
+    uint16_t bufferIndex = 0;
 
-  // For each LED
-  for (uint16_t i = 0; i < LED_COUNT; i++) {
-    // Green byte (sent first in WS2812B)
-    for (int8_t bit = 7; bit >= 0; bit--) {
-      if (bufferIndex >= WS2812B_BUFFER_SIZE) return;
-      ledBuffer[bufferIndex++] = (ledColors[i].green & (1 << bit)) ?
-                                  WS2812B_ONE_PULSE : WS2812B_ZERO_PULSE;
+    for (uint16_t i = 0; i < LED_COUNT; i++) {
+        uint32_t color = currentColors[i];
+        uint8_t green = (color >> 8) & 0xFF;
+        uint8_t red = (color >> 16) & 0xFF;
+        uint8_t blue = color & 0xFF;
+
+        for (int8_t bit = 7; bit >= 0; bit--) {
+            ledBuffer[bufferIndex++] = (green & (1 << bit)) ? WS2812B_ONE_PULSE : WS2812B_ZERO_PULSE;
+        }
+        for (int8_t bit = 7; bit >= 0; bit--) {
+            ledBuffer[bufferIndex++] = (red & (1 << bit)) ? WS2812B_ONE_PULSE : WS2812B_ZERO_PULSE;
+        }
+        for (int8_t bit = 7; bit >= 0; bit--) {
+            ledBuffer[bufferIndex++] = (blue & (1 << bit)) ? WS2812B_ONE_PULSE : WS2812B_ZERO_PULSE;
+        }
     }
 
-    // Red byte
-    for (int8_t bit = 7; bit >= 0; bit--) {
-      if (bufferIndex >= WS2812B_BUFFER_SIZE) return;
-      ledBuffer[bufferIndex++] = (ledColors[i].red & (1 << bit)) ?
-                                  WS2812B_ONE_PULSE : WS2812B_ZERO_PULSE;
+    for (uint16_t i = 0; i < WS2812B_RESET_LEN; i++) {
+        ledBuffer[bufferIndex++] = 0;
     }
-
-    // Blue byte
-    for (int8_t bit = 7; bit >= 0; bit--) {
-      if (bufferIndex >= WS2812B_BUFFER_SIZE) return;
-      ledBuffer[bufferIndex++] = (ledColors[i].blue & (1 << bit)) ?
-                                  WS2812B_ONE_PULSE : WS2812B_ZERO_PULSE;
-    }
-  }
-
-  // Reset pulse
-  for (uint16_t i = 0; i < WS2812B_RESET_LEN && bufferIndex < WS2812B_BUFFER_SIZE; i++) {
-    ledBuffer[bufferIndex++] = 0;
-  }
 }
 
 void WS2812B_SendToLEDs(void)
 {
-  transferComplete = false;
+    transferComplete = false;
+    HAL_TIM_PWM_Stop_DMA(&htim3, TIM_CHANNEL_1);
 
-  // Stop timer and DMA if running (cleanup from previous transfer)
-  HAL_TIM_PWM_Stop_DMA(&htim3, TIM_CHANNEL_1);
+    WS2812B_PrepareBuffer();
 
-  // Start PWM with DMA
-  if (HAL_TIM_PWM_Start_DMA(&htim3, TIM_CHANNEL_1, (uint32_t*)ledBuffer, WS2812B_BUFFER_SIZE) != HAL_OK) {
-    // Handle error
-    return;
-  }
+    if (HAL_TIM_PWM_Start_DMA(&htim3, TIM_CHANNEL_1, (uint32_t*)ledBuffer, WS2812B_BUFFER_SIZE) != HAL_OK) {
+        return;
+    }
 
-  // Wait for transfer completion with timeout
-  uint32_t timeout = HAL_GetTick() + 100;
-  while (!transferComplete && HAL_GetTick() < timeout) {
-    // Wait - DMA will stop automatically when transfer completes
-  }
-
-  // Additional small delay to ensure reset pulse completes
-  HAL_Delay(1);
+    uint32_t timeout = HAL_GetTick() + 100;
+    while (!transferComplete && HAL_GetTick() < timeout) {
+    }
 }
 
 void WS2812B_TIM_DMADelayPulseFinished(void)
 {
-  transferComplete = true;
+    transferComplete = true;
 }
 
-// Keep your existing animation functions...
-void WS2812B_Rainbow(uint32_t delay_ms)
+void WS2812B_SetLogoColors(void)
 {
-  static uint8_t hue = 0;
-
-  for (uint16_t i = 0; i < LED_COUNT; i++) {
-    uint8_t hsv_h = hue + (i * 256 / LED_COUNT);
-    uint8_t hsv_s = 255;
-    uint8_t hsv_v = 50; // Reduced brightness
-
-    // Simple HSV to RGB conversion
-    uint8_t region = hsv_h / 43;
-    uint8_t remainder = (hsv_h - (region * 43)) * 6;
-
-    uint8_t p = (hsv_v * (255 - hsv_s)) >> 8;
-    uint8_t q = (hsv_v * (255 - ((hsv_s * remainder) >> 8))) >> 8;
-    uint8_t t = (hsv_v * (255 - ((hsv_s * (255 - remainder)) >> 8))) >> 8;
-
-    uint8_t r, g, b;
-
-    switch (region) {
-      case 0: r = hsv_v; g = t; b = p; break;
-      case 1: r = q; g = hsv_v; b = p; break;
-      case 2: r = p; g = hsv_v; b = t; break;
-      case 3: r = p; g = q; b = hsv_v; break;
-      case 4: r = t; g = p; b = hsv_v; break;
-      default: r = hsv_v; g = p; b = q; break;
+    /* W = Magenta */
+    for(int i = W_START; i <= W_END; i++) {
+        currentColors[i] = WS2812B_Color(255, 0, 100);
     }
 
-    WS2812B_SetLED(i, r, g, b);
-  }
+    /* R = White */
+    for(int i = R_START; i <= R_END; i++) {
+        currentColors[i] = WS2812B_Color(255, 255, 255);
+    }
 
-  WS2812B_PrepareBuffer();
-  WS2812B_SendToLEDs();
-  HAL_Delay(delay_ms);
-  hue += 1;
+    /* Background = DARK BLUE */
+    for(int i = R_END + 1; i < LED_COUNT; i++) {
+        currentColors[i] = WS2812B_Color(30, 30, 150);  // DARK BLUE
+    }
+
+    WS2812B_SendToLEDs();
 }
 
-uint8_t ws_random_byte(uint8_t max)
+void WS2812B_Clear(void)
 {
-  static uint32_t seed = 1;
-  seed = seed * 1664525 + 1013904223;
-  return (seed >> 24) % max;
+    memset(currentColors, 0, sizeof(currentColors));
+    WS2812B_SendToLEDs();
 }
 
-uint8_t ws_random_range(uint8_t min, uint8_t max)
+void WS2812B_BreatheEffect(void)
 {
-  return min + ws_random_byte(max - min);
+    static uint32_t lastUpdate = 0;
+    static uint8_t breathDir = 1;
+    static uint8_t breathBrightness = 5;
+
+    if (HAL_GetTick() - lastUpdate < 30) return;
+    lastUpdate = HAL_GetTick();
+
+    if (breathDir) {
+        breathBrightness++;
+        if (breathBrightness >= 20) breathDir = 0;
+    } else {
+        breathBrightness--;
+        if (breathBrightness <= 5) breathDir = 1;
+    }
+
+    globalBrightness = breathBrightness;
+    WS2812B_SetLogoColors();
+}
+
+void WS2812B_SparkleEffect(void)
+{
+    static uint32_t lastSparkle = 0;
+    static uint16_t sparklePixel = 0;
+    static uint8_t sparkleState = 0;
+
+    if (HAL_GetTick() - lastSparkle < 150) return;
+    lastSparkle = HAL_GetTick();
+
+    globalBrightness = 10;
+
+    if (sparkleState == 0) {
+        WS2812B_SetLogoColors();
+
+        uint8_t section = ws_random_byte(2);
+        if (section == 0) {
+            sparklePixel = W_START + ws_random_byte(W_END - W_START + 1);
+        } else {
+            sparklePixel = R_START + ws_random_byte(R_END - R_START + 1);
+        }
+
+        currentColors[sparklePixel] = WS2812B_Color(255, 255, 255);
+        sparkleState = 1;
+    } else {
+        WS2812B_SetLogoColors();
+        sparkleState = 0;
+    }
+
+    WS2812B_SendToLEDs();
+}
+
+void WS2812B_WaveEffect(void)
+{
+    static uint32_t lastUpdate = 0;
+    static uint16_t wavePos = W_START;
+    static uint8_t waveSection = 0;
+
+    if (HAL_GetTick() - lastUpdate < 80) return;
+    lastUpdate = HAL_GetTick();
+
+    globalBrightness = 10;
+    WS2812B_SetLogoColors();
+
+    if (waveSection == 0) {
+        currentColors[wavePos] = WS2812B_Color(255, 150, 200);
+        wavePos++;
+        if (wavePos > W_END) {
+            wavePos = R_START;
+            waveSection = 1;
+        }
+    } else {
+        currentColors[wavePos] = WS2812B_Color(255, 255, 255);
+        wavePos++;
+        if (wavePos > R_END) {
+            wavePos = W_START;
+            waveSection = 0;
+        }
+    }
+
+    WS2812B_SendToLEDs();
+}
+
+void WS2812B_PulseEffect(void)
+{
+    static uint32_t lastPulse = 0;
+    static uint8_t pulseState = 0;
+
+    if (HAL_GetTick() - lastPulse < 400) return;
+    lastPulse = HAL_GetTick();
+
+    if (pulseState == 0) {
+        globalBrightness = 25;
+        WS2812B_SetLogoColors();
+        pulseState = 1;
+    } else {
+        globalBrightness = 10;
+        WS2812B_SetLogoColors();
+        pulseState = 0;
+    }
+}
+
+void WS2812B_RainbowEffect(void)
+{
+    static uint32_t lastUpdate = 0;
+    static uint8_t rainbowStep = 0;
+    static uint16_t rainbowCounter = 0;
+
+    if (HAL_GetTick() - lastUpdate < 30) return;
+    lastUpdate = HAL_GetTick();
+
+    for(uint16_t i = 0; i < LED_COUNT; i++) {
+        currentColors[i] = WS2812B_Wheel((i + rainbowStep) & 255);
+    }
+
+    WS2812B_SendToLEDs();
+
+    rainbowStep += 3;
+    rainbowCounter++;
+
+    if (rainbowCounter > 150) {
+        rainbowStep = 0;
+        rainbowCounter = 0;
+        globalBrightness = 10;
+        WS2812B_SetLogoColors();
+    }
+}
+
+uint32_t WS2812B_Wheel(uint8_t wheelPos)
+{
+    wheelPos = 255 - wheelPos;
+    if(wheelPos < 85) {
+        return WS2812B_Color(255 - wheelPos * 3, 0, wheelPos * 3);
+    }
+    if(wheelPos < 170) {
+        wheelPos -= 85;
+        return WS2812B_Color(0, wheelPos * 3, 255 - wheelPos * 3);
+    }
+    wheelPos -= 170;
+    return WS2812B_Color(wheelPos * 3, 255 - wheelPos * 3, 0);
+}
+
+void WS2812B_RunEffect(effect_mode_t mode)
+{
+    switch(mode) {
+        case MODE_STATIC_LOGO:
+            break;
+        case MODE_BREATHE:
+            WS2812B_BreatheEffect();
+            break;
+        case MODE_SPARKLE:
+            WS2812B_SparkleEffect();
+            break;
+        case MODE_WAVE:
+            WS2812B_WaveEffect();
+            break;
+        case MODE_PULSE:
+            WS2812B_PulseEffect();
+            break;
+        case MODE_RAINBOW:
+            WS2812B_RainbowEffect();
+            break;
+        case MODE_COUNT:
+        default:
+            break;
+    }
+}
+
+uint32_t ws_random_byte(uint32_t max)
+{
+    static uint32_t seed = 1;
+    seed = seed * 1664525 + 1013904223;
+    return (seed >> 16) % max;
 }
