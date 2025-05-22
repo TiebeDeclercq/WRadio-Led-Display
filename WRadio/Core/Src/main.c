@@ -94,17 +94,36 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  // Send 0xFF (all 1 bits) - should show 8 long pulses
-	   WS2812B_SetLED(0, 100, 0, 0);
-	   WS2812B_PrepareBuffer();
-	   WS2812B_SendToLEDs();
-	   HAL_Delay(50);
+	  // Test 1: Simple color test
+	      WS2812B_SetLED(0, 50, 0, 0);    // Red
+	      WS2812B_PrepareBuffer();
+	      WS2812B_SendToLEDs();
+	      HAL_Delay(500);
 
-	   // Send 0x00 (all 0 bits) - should show 8 short pulses
-	   WS2812B_SetLED(0, 0, 100, 0);
-	   WS2812B_PrepareBuffer();
-	   WS2812B_SendToLEDs();
-	   HAL_Delay(50);
+	      WS2812B_SetLED(0, 0, 50, 0);    // Green
+	      WS2812B_PrepareBuffer();
+	      WS2812B_SendToLEDs();
+	      HAL_Delay(500);
+
+	      WS2812B_SetLED(0, 0, 0, 50);    // Blue
+	      WS2812B_PrepareBuffer();
+	      WS2812B_SendToLEDs();
+	      HAL_Delay(500);
+
+	      // Test 2: All LEDs same color
+	      WS2812B_SetAllLED(20, 20, 20);  // White (low brightness)
+	      WS2812B_PrepareBuffer();
+	      WS2812B_SendToLEDs();
+	      HAL_Delay(1000);
+
+	      // Test 3: Rainbow effect
+	      for(int i = 0; i < 50; i++) {
+	        WS2812B_Rainbow(50);
+	      }
+
+	      // Turn off all LEDs
+	      WS2812B_Clear();
+	      HAL_Delay(1000);
 
   }
   /* USER CODE END 3 */
