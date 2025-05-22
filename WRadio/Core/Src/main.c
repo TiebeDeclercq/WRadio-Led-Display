@@ -32,12 +32,11 @@
 TIM_HandleTypeDef htim3;
 DMA_HandleTypeDef hdma_tim3_ch1_trig;
 
+/* USER CODE BEGIN PV */
 /* Global variables */
 static effect_mode_t currentMode = MODE_STATIC_LOGO;
 static uint32_t lastButtonPress = 0;
 static uint8_t buttonPressed = 0;
-
-/* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
 
@@ -168,7 +167,7 @@ static void MX_TIM3_Init(void)
   htim3.Instance = TIM3;
   htim3.Init.Prescaler = 0;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 71;
+  htim3.Init.Period = 59;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)

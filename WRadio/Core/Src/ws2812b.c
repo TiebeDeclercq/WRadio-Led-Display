@@ -1,4 +1,4 @@
-/* ws2812b.c - Simple version with blue background */
+/* ws2812b.c - RAM optimized version */
 #include "ws2812b.h"
 #include "main.h"
 #include <string.h>
@@ -7,15 +7,16 @@
 #define WS2812B_ONE_PULSE   38
 #define WS2812B_ZERO_PULSE  19
 #define WS2812B_RESET_LEN   50
+#define BASE_BRIGHTNESS     100
 
-/* Simple approach - keep original LED count */
+/* Changed from uint16_t to uint8_t - saves 1,874 bytes */
 #define LED_COUNT 76
 #define WS2812B_BUFFER_SIZE (LED_COUNT * 24 + 50)
 
-uint16_t ledBuffer[WS2812B_BUFFER_SIZE];
+uint8_t ledBuffer[WS2812B_BUFFER_SIZE];  // Changed from uint16_t
 uint32_t currentColors[LED_COUNT];
 volatile bool transferComplete = false;
-static uint8_t globalBrightness = 10;
+uint8_t globalBrightness = BASE_BRIGHTNESS;
 
 /* Original ranges for 76 LEDs */
 #define W_START 0
@@ -73,6 +74,7 @@ void WS2812B_SendToLEDs(void)
 
     WS2812B_PrepareBuffer();
 
+    // Cast uint8_t buffer to uint32_t for DMA (DMA expects uint32_t pointer)
     if (HAL_TIM_PWM_Start_DMA(&htim3, TIM_CHANNEL_1, (uint32_t*)ledBuffer, WS2812B_BUFFER_SIZE) != HAL_OK) {
         return;
     }
@@ -117,17 +119,17 @@ void WS2812B_BreatheEffect(void)
 {
     static uint32_t lastUpdate = 0;
     static uint8_t breathDir = 1;
-    static uint8_t breathBrightness = 5;
+    static uint8_t breathBrightness = BASE_BRIGHTNESS / 2;
 
     if (HAL_GetTick() - lastUpdate < 30) return;
     lastUpdate = HAL_GetTick();
 
     if (breathDir) {
         breathBrightness++;
-        if (breathBrightness >= 20) breathDir = 0;
+        if (breathBrightness >= BASE_BRIGHTNESS * 2) breathDir = 0;
     } else {
         breathBrightness--;
-        if (breathBrightness <= 5) breathDir = 1;
+        if (breathBrightness <= BASE_BRIGHTNESS / 2) breathDir = 1;
     }
 
     globalBrightness = breathBrightness;
@@ -143,7 +145,7 @@ void WS2812B_SparkleEffect(void)
     if (HAL_GetTick() - lastSparkle < 150) return;
     lastSparkle = HAL_GetTick();
 
-    globalBrightness = 10;
+    globalBrightness = BASE_BRIGHTNESS;
 
     if (sparkleState == 0) {
         WS2812B_SetLogoColors();
@@ -174,7 +176,7 @@ void WS2812B_WaveEffect(void)
     if (HAL_GetTick() - lastUpdate < 80) return;
     lastUpdate = HAL_GetTick();
 
-    globalBrightness = 10;
+    globalBrightness = BASE_BRIGHTNESS;
     WS2812B_SetLogoColors();
 
     if (waveSection == 0) {
@@ -205,11 +207,11 @@ void WS2812B_PulseEffect(void)
     lastPulse = HAL_GetTick();
 
     if (pulseState == 0) {
-        globalBrightness = 25;
+        globalBrightness = BASE_BRIGHTNESS * 2.5;
         WS2812B_SetLogoColors();
         pulseState = 1;
     } else {
-        globalBrightness = 10;
+        globalBrightness = BASE_BRIGHTNESS;
         WS2812B_SetLogoColors();
         pulseState = 0;
     }
@@ -236,7 +238,7 @@ void WS2812B_RainbowEffect(void)
     if (rainbowCounter > 150) {
         rainbowStep = 0;
         rainbowCounter = 0;
-        globalBrightness = 10;
+        globalBrightness = BASE_BRIGHTNESS;
         WS2812B_SetLogoColors();
     }
 }

@@ -32,6 +32,8 @@ typedef struct {
     uint8_t blue;
 } LED_Color;
 
+extern uint8_t globalBrightness;
+
 /* Function prototypes */
 void WS2812B_Init(void);
 void WS2812B_SetLED(uint16_t index, uint8_t red, uint8_t green, uint8_t blue);
