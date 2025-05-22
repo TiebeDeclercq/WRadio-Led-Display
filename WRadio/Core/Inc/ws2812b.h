@@ -12,10 +12,8 @@
 #include "main.h"
 
 /* User configuration ---------------------------------------------------------*/
-#define LED_COUNT       10     // Number of LEDs in your strip
-
-/* Calculated automatically - do not modify ---------------------------------*/
-#define WS2812B_BUFFER_SIZE (LED_COUNT * 24 + 50)  // 24 bits per LED + reset
+#define LED_COUNT       10
+#define WS2812B_BUFFER_SIZE (LED_COUNT * 24 + 50)  // Back to +50
 
 /* Types ---------------------------------------------------------------------*/
 typedef struct {
@@ -34,6 +32,7 @@ void WS2812B_TIM_DMADelayPulseFinished(void);
 void WS2812B_Rainbow(uint32_t delay_ms);
 void WS2812B_Fire(uint8_t cooling, uint8_t sparking);
 void WS2812B_SetFromHeatColor(uint16_t ledIndex, uint8_t temperature);
+void WS2812B_Clear(void);
 uint8_t ws_random_byte(uint8_t max);
 uint8_t ws_random_range(uint8_t min, uint8_t max);
 

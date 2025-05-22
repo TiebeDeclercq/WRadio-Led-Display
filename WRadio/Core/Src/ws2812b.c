@@ -11,9 +11,9 @@
 #include <stdbool.h>
 
 /* WS2812B protocol timing requires specific timing values */
-#define WS2812B_ONE_PULSE   40      // '1' bit duty cycle (~0.8us at 48MHz/1)
-#define WS2812B_ZERO_PULSE  20      // '0' bit duty cycle (~0.4us at 48MHz/1)
-#define WS2812B_RESET_LEN   50      // Reset length (>50us pause)
+#define WS2812B_ONE_PULSE   48      // For period 71
+#define WS2812B_ZERO_PULSE  24      // For period 71
+#define WS2812B_RESET_LEN   50      // Keep same
 
 // Global variables
 uint16_t ledBuffer[WS2812B_BUFFER_SIZE];
@@ -22,7 +22,7 @@ volatile bool transferComplete = false;
 
 // External HAL handles - These should be defined in main.c
 extern TIM_HandleTypeDef htim3;
-extern DMA_HandleTypeDef hdma_tim3_ch1;
+extern DMA_HandleTypeDef hdma_tim3_ch1_trig;
 
 /**
   * @brief Initialize WS2812B LED driver
@@ -55,6 +55,16 @@ void WS2812B_SetLED(uint16_t index, uint8_t red, uint8_t green, uint8_t blue)
 }
 
 /**
+  * @brief Clear all LEDs and send immediately
+  */
+void WS2812B_Clear(void)
+{
+  memset(ledColors, 0, sizeof(ledColors));
+  WS2812B_PrepareBuffer();
+  WS2812B_SendToLEDs();
+}
+
+/**
   * @brief Set all LEDs to the same color
   * @param red Red component (0-255)
   * @param green Green component (0-255)
@@ -81,25 +91,28 @@ void WS2812B_PrepareBuffer(void)
   for (uint16_t i = 0; i < LED_COUNT; i++) {
     // Green byte (sent first in WS2812B)
     for (int8_t bit = 7; bit >= 0; bit--) {
+      if (bufferIndex >= WS2812B_BUFFER_SIZE) return; // Safety check
       ledBuffer[bufferIndex++] = (ledColors[i].green & (1 << bit)) ?
                                   WS2812B_ONE_PULSE : WS2812B_ZERO_PULSE;
     }
 
     // Red byte
     for (int8_t bit = 7; bit >= 0; bit--) {
+      if (bufferIndex >= WS2812B_BUFFER_SIZE) return; // Safety check
       ledBuffer[bufferIndex++] = (ledColors[i].red & (1 << bit)) ?
                                   WS2812B_ONE_PULSE : WS2812B_ZERO_PULSE;
     }
 
     // Blue byte
     for (int8_t bit = 7; bit >= 0; bit--) {
+      if (bufferIndex >= WS2812B_BUFFER_SIZE) return; // Safety check
       ledBuffer[bufferIndex++] = (ledColors[i].blue & (1 << bit)) ?
                                   WS2812B_ONE_PULSE : WS2812B_ZERO_PULSE;
     }
   }
 
   // Reset pulse (all zeros, will output 0V)
-  for (uint16_t i = 0; i < WS2812B_RESET_LEN; i++) {
+  for (uint16_t i = 0; i < WS2812B_RESET_LEN && bufferIndex < WS2812B_BUFFER_SIZE; i++) {
     ledBuffer[bufferIndex++] = 0;
   }
 }

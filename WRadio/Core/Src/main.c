@@ -80,6 +80,9 @@ int main(void)
   MX_DMA_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+
+  HAL_Delay(100);
+
   // Initialize the WS2812B driver
   WS2812B_Init();
   /* USER CODE END 2 */
@@ -91,9 +94,17 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  for (int i = 0; i < 100; i++) {
-	  	       WS2812B_Rainbow(20);  // Update every 20ms
-	  }
+	  // Send 0xFF (all 1 bits) - should show 8 long pulses
+	   WS2812B_SetLED(0, 100, 0, 0);
+	   WS2812B_PrepareBuffer();
+	   WS2812B_SendToLEDs();
+	   HAL_Delay(50);
+
+	   // Send 0x00 (all 0 bits) - should show 8 short pulses
+	   WS2812B_SetLED(0, 0, 100, 0);
+	   WS2812B_PrepareBuffer();
+	   WS2812B_SendToLEDs();
+	   HAL_Delay(50);
 
   }
   /* USER CODE END 3 */
@@ -159,7 +170,7 @@ static void MX_TIM3_Init(void)
   htim3.Instance = TIM3;
   htim3.Init.Prescaler = 0;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 59;
+  htim3.Init.Period = 71;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -237,7 +248,13 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+// Add this function to main.c
+void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim->Instance == TIM3) {
+    WS2812B_TIM_DMADelayPulseFinished();
+  }
+}
 /* USER CODE END 4 */
 
 /**
