@@ -1,5 +1,5 @@
-../Core/Src/flash_storage.c:23:10:Flash_Storage_CalculateChecksum	1
-../Core/Src/flash_storage.c:13:6:Flash_Storage_Init	1
-../Core/Src/flash_storage.c:36:15:Flash_Storage_ReadMode	4
-../Core/Src/flash_storage.c:56:9:Flash_Storage_ReadBrightnessLevel	4
-../Core/Src/flash_storage.c:76:19:Flash_Storage_SaveSettings	4
+../Core/Src/flash_storage.c:36:10:Flash_Storage_CalculateChecksum	1
+../Core/Src/flash_storage.c:26:6:Flash_Storage_Init	1
+../Core/Src/flash_storage.c:49:15:Flash_Storage_ReadMode	4
+../Core/Src/flash_storage.c:69:9:Flash_Storage_ReadBrightnessLevel	4
+../Core/Src/flash_storage.c:89:19:Flash_Storage_SaveSettings	4

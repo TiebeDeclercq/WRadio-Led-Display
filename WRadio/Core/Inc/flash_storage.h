@@ -1,9 +1,23 @@
-/*
- * flash_storage.h
- *
- *  Created on: May 24, 2025
- *      Author: tiebe
- */
+/**
+******************************************************************************
+* @file           : flash_storage.h
+* @brief          : handles storage of brightness settings, current animation in flash
+******************************************************************************
+*
+* ██████╗ ███████╗ ██████╗████████╗██████╗  ██████╗ ███╗   ██╗██╗ ██████╗███████╗
+* ██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗██╔═══██╗████╗  ██║██║██╔════╝██╔════╝
+* ██║  ██║█████╗  ██║        ██║   ██████╔╝██║   ██║██╔██╗ ██║██║██║     ███████╗
+* ██║  ██║██╔══╝  ██║        ██║   ██╔══██╗██║   ██║██║╚██╗██║██║██║     ╚════██║
+* ██████╔╝███████╗╚██████╗   ██║   ██║  ██║╚██████╔╝██║ ╚████║██║╚██████╗███████║
+* ╚═════╝ ╚══════╝ ╚═════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝ ╚═════╝╚══════╝
+*
+******************************************************************************
+* @author         : Tiebe Declercq
+* @copyright      : Copyright (c) 2025 DECTRONICS. All rights reserved.
+* @version        : 1.0.0
+* @date           : 2025-05-24
+******************************************************************************
+*/
 
 #ifndef INC_FLASH_STORAGE_H_
 #define INC_FLASH_STORAGE_H_
@@ -20,7 +34,7 @@ typedef struct {
     uint32_t magic;           // Magic number for validation
     effect_mode_t mode;       // Current effect mode
     uint8_t brightnessLevel;  // Brightness level index (0-4)
-    uint8_t reserved[6];      // Reserved for future use (increased by 1)
+    uint8_t reserved[6];      // Reserved for future use
     uint32_t checksum;        // Simple checksum
 } flash_settings_t;
 

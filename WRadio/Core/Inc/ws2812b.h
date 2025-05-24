@@ -1,14 +1,33 @@
-/* ws2812b.h - Updated with new effects */
+/**
+******************************************************************************
+* @file           : ws2812b.c
+* @brief          : handles ws2812b led animations of the matrix
+******************************************************************************
+*
+* ██████╗ ███████╗ ██████╗████████╗██████╗  ██████╗ ███╗   ██╗██╗ ██████╗███████╗
+* ██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗██╔═══██╗████╗  ██║██║██╔════╝██╔════╝
+* ██║  ██║█████╗  ██║        ██║   ██████╔╝██║   ██║██╔██╗ ██║██║██║     ███████╗
+* ██║  ██║██╔══╝  ██║        ██║   ██╔══██╗██║   ██║██║╚██╗██║██║██║     ╚════██║
+* ██████╔╝███████╗╚██████╗   ██║   ██║  ██║╚██████╔╝██║ ╚████║██║╚██████╗███████║
+* ╚═════╝ ╚══════╝ ╚═════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝ ╚═════╝╚══════╝
+*
+******************************************************************************
+* @author         : Tiebe Declercq
+* @copyright      : Copyright (c) 2025 DECTRONICS. All rights reserved.
+* @version        : 1.0.0
+* @date           : 2025-05-24
+******************************************************************************
+*/
 #ifndef SRC_WS2812B_H_
 #define SRC_WS2812B_H_
 
 #include "main.h"
 
 /* User configuration */
-#define LED_COUNT       76     // Reduced for STM32F030F4 RAM limits
+#define LED_COUNT	76
 #define WS2812B_BUFFER_SIZE (LED_COUNT * 24 + 50)
 
-/* WR Logo pixel ranges - back to original */
+/* WR Logo pixel ranges */
 #define W_START    0
 #define W_END      20
 #define R_START    20
@@ -38,6 +57,7 @@ typedef struct {
 } LED_Color;
 
 extern uint8_t globalBrightness;
+extern uint8_t baseBrightness;
 
 /* Function prototypes */
 void WS2812B_Init(void);
@@ -67,4 +87,4 @@ void WS2812B_RunEffect(effect_mode_t mode);
 uint32_t ws_random_byte(uint32_t max);
 uint32_t WS2812B_Color(uint8_t r, uint8_t g, uint8_t b);
 
-#endif /* SRC_WS2812B_H_ */
+#endif

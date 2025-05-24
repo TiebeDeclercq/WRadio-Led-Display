@@ -1,10 +1,34 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body with persistent effect storage
-  ******************************************************************************
-  */
+******************************************************************************
+* @file           : main.c
+* @brief          : handles button presses, data saved in flash, and animates WR logo hardware
+******************************************************************************
+*
+* ██████╗ ███████╗ ██████╗████████╗██████╗  ██████╗ ███╗   ██╗██╗ ██████╗███████╗
+* ██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗██╔═══██╗████╗  ██║██║██╔════╝██╔════╝
+* ██║  ██║█████╗  ██║        ██║   ██████╔╝██║   ██║██╔██╗ ██║██║██║     ███████╗
+* ██║  ██║██╔══╝  ██║        ██║   ██╔══██╗██║   ██║██║╚██╗██║██║██║     ╚════██║
+* ██████╔╝███████╗╚██████╗   ██║   ██║  ██║╚██████╔╝██║ ╚████║██║╚██████╗███████║
+* ╚═════╝ ╚══════╝ ╚═════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝ ╚═════╝╚══════╝
+*
+******************************************************************************
+* @attention
+*
+* Copyright (c) 2025 STMicroelectronics.
+* All rights reserved.
+*
+* This software is licensed under terms that can be found in the LICENSE file
+* in the root directory of this software component.
+* If no LICENSE file comes with this software, it is provided AS-IS.
+*
+******************************************************************************
+* @author         : Tiebe Declercq
+* @copyright      : Copyright (c) 2025 DECTRONICS. All rights reserved.
+* @version        : 1.0.0
+* @date           : 2025-05-24
+******************************************************************************
+*/
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -41,12 +65,22 @@ DMA_HandleTypeDef hdma_tim3_ch1_trig;
 static effect_mode_t currentMode = MODE_STATIC_LOGO;
 static uint32_t lastButtonPress = 0;
 static uint32_t lastModeChange = 0;
-static uint32_t buttonPressStartTime = 0;  // When button was pressed down
+static uint32_t buttonPressStartTime = 0;
 static uint8_t buttonPressed = 0;
 static uint8_t buttonReleased = 1;
 static uint8_t modePendingSave = 0;
-static uint8_t brightnessLevel = 2;  // Start at medium brightness (0-4)
-static uint8_t brightnessLevels[BRIGHTNESS_LEVELS] = {50, 75, 100, 150, 200}; // Brightness values
+static uint8_t brightnessLevel = 2;
+
+static uint8_t brightnessLevels[BRIGHTNESS_LEVELS] = {50, 100, 150, 200, 255};
+/*
+Level 0: [████░░░░░░] 50   (20% brightness)
+Level 1: [████████░░] 100  (40% brightness)  ◀── Default
+Level 2: [██████████] 150  (60% brightness)
+Level 3: [██████████] 200  (80% brightness)
+Level 4: [██████████] 255  (100% brightness)
+*/
+
+uint8_t baseBrightness = 100;  // This will be set based on brightness level
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -105,8 +139,9 @@ int main(void)
   currentMode = Flash_Storage_ReadMode();
   brightnessLevel = Flash_Storage_ReadBrightnessLevel();
 
-  // Set the actual brightness value from the level
-  globalBrightness = brightnessLevels[brightnessLevel];
+  // Set the base brightness from the level
+  baseBrightness = brightnessLevels[brightnessLevel];
+  globalBrightness = baseBrightness;
 
   // Initialize the WS2812B driver
   WS2812B_Init();
@@ -126,7 +161,7 @@ int main(void)
     HandleButtonPress();
     HandleFlashSave();      // Check if we need to save settings
     WS2812B_RunEffect(currentMode);
-    HAL_Delay(1);  /* Small delay for stability */
+    HAL_Delay(1);
 
   }
   /* USER CODE END 3 */
@@ -299,16 +334,9 @@ void HandleButtonPress(void)
                 brightnessLevel = 0;  // Loop back to lowest
             }
 
-            // Update global brightness
-            globalBrightness = brightnessLevels[brightnessLevel];
-
-            // Visual feedback - quick pulse to show new brightness
-            WS2812B_SetLogoColors();
-            HAL_Delay(100);
-            globalBrightness = brightnessLevels[brightnessLevel] * 1.5; // Brief bright pulse
-            WS2812B_SetLogoColors();
-            HAL_Delay(200);
-            globalBrightness = brightnessLevels[brightnessLevel]; // Back to normal
+            // Update base brightness that will be used by all effects
+            baseBrightness = brightnessLevels[brightnessLevel];
+            globalBrightness = baseBrightness;
 
             // Mark settings for saving
             modePendingSave = 1;
@@ -324,9 +352,6 @@ void HandleButtonPress(void)
             // Mark mode for saving
             modePendingSave = 1;
             lastModeChange = currentTime;
-
-            // Reset to logo display for new mode
-            WS2812B_SetLogoColors();
         }
     }
 }
