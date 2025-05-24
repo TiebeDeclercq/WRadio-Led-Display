@@ -45,9 +45,12 @@ extern uint8_t baseBrightness;
 extern TIM_HandleTypeDef htim3;
 extern DMA_HandleTypeDef hdma_tim3_ch1_trig;
 
+static uint8_t staticLogoNeedsUpdate = 1;
+
 void WS2812B_Init(void)
 {
     memset(currentColors, 0, sizeof(currentColors));
+    globalBrightness = baseBrightness;
     WS2812B_SetLogoColors();
 }
 
@@ -109,8 +112,6 @@ void WS2812B_TIM_DMADelayPulseFinished(void)
 
 void WS2812B_SetLogoColors(void)
 {
-    globalBrightness = baseBrightness;
-
     /* W = Magenta */
     for(int i = W_START; i <= W_END; i++) {
         currentColors[i] = WS2812B_Color(255, 0, 100);
@@ -133,6 +134,16 @@ void WS2812B_Clear(void)
 {
     memset(currentColors, 0, sizeof(currentColors));
     WS2812B_SendToLEDs();
+}
+
+void WS2812B_StaticLogoEffect(void)
+{
+    // Only update if needed (when switching to static mode or brightness changed)
+    if (staticLogoNeedsUpdate) {
+        globalBrightness = baseBrightness;  // Set brightness for static logo
+        WS2812B_SetLogoColors();
+        staticLogoNeedsUpdate = 0;  // Clear the update flag
+    }
 }
 
 void WS2812B_BreatheEffect(void)
@@ -481,56 +492,75 @@ uint32_t WS2812B_Wheel(uint8_t wheelPos)
 
 void WS2812B_RunEffect(effect_mode_t mode)
 {
-    switch(mode) {
-        case MODE_STATIC_LOGO:
-            // Static logo - no animation needed
-            break;
 
-        case MODE_BREATHE:
-            WS2812B_BreatheEffect();
-            break;
+	static effect_mode_t lastMode = MODE_COUNT;  // Initialize to invalid mode
 
-        case MODE_SPARKLE:
-            WS2812B_SparkleEffect();
-            break;
+	// Check if mode has changed
+	    if (mode != lastMode) {
+	        // Mode changed - set flag to update static logo if needed
+	        if (mode == MODE_STATIC_LOGO) {
+	            staticLogoNeedsUpdate = 1;
+	        }
+	        lastMode = mode;
+	    }
 
-        case MODE_WAVE:
-            WS2812B_WaveEffect();
-            break;
+	    switch(mode) {
+	            case MODE_STATIC_LOGO:
+	                WS2812B_StaticLogoEffect();
+	                break;
 
-        case MODE_PULSE:
-            WS2812B_PulseEffect();
-            break;
+	            case MODE_BREATHE:
+	                WS2812B_BreatheEffect();
+	                break;
 
-        case MODE_RAINBOW:
-            WS2812B_RainbowEffect();
-            break;
+	            case MODE_SPARKLE:
+	                WS2812B_SparkleEffect();
+	                break;
 
-        case MODE_COMET:
-            WS2812B_CometEffect();
-            break;
+	            case MODE_WAVE:
+	                WS2812B_WaveEffect();
+	                break;
 
-        case MODE_FILL:
-            WS2812B_FillEffect();
-            break;
+	            case MODE_PULSE:
+	                WS2812B_PulseEffect();
+	                break;
 
-        case MODE_SCANNER:
-            WS2812B_ScannerEffect();
-            break;
+	            case MODE_RAINBOW:
+	                WS2812B_RainbowEffect();
+	                break;
 
-        case MODE_COLOR_SHIFT:
-            WS2812B_ColorShiftEffect();
-            break;
+	            case MODE_COMET:
+	                WS2812B_CometEffect();
+	                break;
 
-        case MODE_STROBE:
-            WS2812B_StrobeEffect();
-            break;
+	            case MODE_FILL:
+	                WS2812B_FillEffect();
+	                break;
 
-        case MODE_COUNT:
-        default:
-            // Fallback to static logo for invalid modes
-            break;
+	            case MODE_SCANNER:
+	                WS2812B_ScannerEffect();
+	                break;
+
+	            case MODE_COLOR_SHIFT:
+	                WS2812B_ColorShiftEffect();
+	                break;
+
+	            case MODE_STROBE:
+	                WS2812B_StrobeEffect();
+	                break;
+
+	            case MODE_COUNT:
+	            default:
+	                // Fallback to static logo for invalid modes
+	                WS2812B_StaticLogoEffect();
+	                break;
     }
+}
+
+// Function to trigger static logo update (call when brightness changes)
+void WS2812B_TriggerStaticLogoUpdate(void)
+{
+    staticLogoNeedsUpdate = 1;
 }
 
 uint32_t ws_random_byte(uint32_t max)

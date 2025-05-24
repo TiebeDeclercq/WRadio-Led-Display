@@ -338,6 +338,11 @@ void HandleButtonPress(void)
             baseBrightness = brightnessLevels[brightnessLevel];
             globalBrightness = baseBrightness;
 
+            // Trigger static logo update if we're in static mode
+            if (currentMode == MODE_STATIC_LOGO) {
+                WS2812B_TriggerStaticLogoUpdate();
+            }
+
             // Mark settings for saving
             modePendingSave = 1;
             lastModeChange = currentTime;

@@ -70,6 +70,7 @@ void WS2812B_TIM_DMADelayPulseFinished(void);
 
 /* Logo and effect functions */
 void WS2812B_SetLogoColors(void);
+void WS2812B_StaticLogoEffect(void);
 void WS2812B_BreatheEffect(void);
 void WS2812B_SparkleEffect(void);
 void WS2812B_WaveEffect(void);
@@ -86,5 +87,6 @@ void WS2812B_RunEffect(effect_mode_t mode);
 /* Utility functions */
 uint32_t ws_random_byte(uint32_t max);
 uint32_t WS2812B_Color(uint8_t r, uint8_t g, uint8_t b);
+void WS2812B_TriggerStaticLogoUpdate(void);
 
 #endif
