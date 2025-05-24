@@ -22,6 +22,11 @@ typedef enum {
     MODE_WAVE,
     MODE_PULSE,
     MODE_RAINBOW,
+    MODE_COMET,
+    MODE_FILL,
+    MODE_SCANNER,
+    MODE_COLOR_SHIFT,
+    MODE_STROBE,
     MODE_COUNT
 } effect_mode_t;
 
@@ -50,6 +55,11 @@ void WS2812B_SparkleEffect(void);
 void WS2812B_WaveEffect(void);
 void WS2812B_PulseEffect(void);
 void WS2812B_RainbowEffect(void);
+void WS2812B_CometEffect(void);
+void WS2812B_FillEffect(void);
+void WS2812B_ScannerEffect(void);
+void WS2812B_ColorShiftEffect(void);
+void WS2812B_StrobeEffect(void);
 uint32_t WS2812B_Wheel(uint8_t wheelPos);
 void WS2812B_RunEffect(effect_mode_t mode);
 

@@ -6,8 +6,8 @@
 	(paper "A3")
 	(title_block
 		(title "WR Radio led sign")
-		(date "2025-04-18")
-		(rev "2")
+		(date "2025-05-23")
+		(rev "3")
 		(company "Dectronics.cc")
 	)
 	(lib_symbols
@@ -3725,7 +3725,7 @@
 		(uuid "42e4ae05-8daf-4af6-a812-5be2253fd778")
 	)
 	(junction
-		(at 129.54 76.2)
+		(at 149.86 72.39)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "43530e23-b73d-4008-8d78-bae542235a42")
@@ -3941,7 +3941,7 @@
 		(uuid "8715e556-fceb-48dd-beda-6228eb56217a")
 	)
 	(junction
-		(at 135.89 76.2)
+		(at 156.21 72.39)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8719bd5c-cdae-46da-894a-42d71f8c1fa9")
@@ -3969,12 +3969,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8ddf0787-0048-4c9a-ae97-1ac76675a219")
-	)
-	(junction
-		(at 173.99 77.47)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "8ebbf4dd-def5-498a-ac05-69db3777434a")
 	)
 	(junction
 		(at 364.49 137.16)
@@ -4283,6 +4277,12 @@
 		(uuid "dd943da4-6037-4545-9e98-0542101c51ba")
 	)
 	(junction
+		(at 149.86 80.01)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "de394d57-81fe-498d-8c2e-7c10638ed752")
+	)
+	(junction
 		(at 298.45 168.91)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4317,12 +4317,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "e8cab978-fe17-428c-ad7b-4e6484cf8cc7")
-	)
-	(junction
-		(at 129.54 87.63)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "ea1b6fbb-ca7e-477a-8e38-68a2f44fb998")
 	)
 	(junction
 		(at 248.92 119.38)
@@ -4734,6 +4728,16 @@
 	)
 	(wire
 		(pts
+			(xy 29.21 66.04) (xy 30.48 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "09035ebc-4d0f-4c63-bef5-19d5bdea83f5")
+	)
+	(wire
+		(pts
 			(xy 132.08 107.95) (xy 134.62 107.95)
 		)
 		(stroke
@@ -5024,16 +5028,6 @@
 	)
 	(wire
 		(pts
-			(xy 173.99 76.2) (xy 173.99 77.47)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "160227a3-b9f2-4691-bc20-11afb1fb5fc6")
-	)
-	(wire
-		(pts
 			(xy 255.27 104.14) (xy 256.54 104.14)
 		)
 		(stroke
@@ -5054,7 +5048,7 @@
 	)
 	(wire
 		(pts
-			(xy 113.03 76.2) (xy 113.03 87.63)
+			(xy 133.35 72.39) (xy 133.35 80.01)
 		)
 		(stroke
 			(width 0)
@@ -5524,7 +5518,7 @@
 	)
 	(polyline
 		(pts
-			(xy 106.68 93.98) (xy 149.86 93.98)
+			(xy 106.68 87.63) (xy 149.86 87.63)
 		)
 		(stroke
 			(width 0)
@@ -5561,6 +5555,16 @@
 			(type default)
 		)
 		(uuid "2bf5fe6e-b58c-4336-9340-4b4fd065822d")
+	)
+	(wire
+		(pts
+			(xy 149.86 81.28) (xy 149.86 80.01)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2bfd58c1-a530-45e2-9152-531c32209175")
 	)
 	(wire
 		(pts
@@ -5671,16 +5675,6 @@
 			(type default)
 		)
 		(uuid "35f7f58a-0f91-46e2-86d5-8e5b74e9d395")
-	)
-	(wire
-		(pts
-			(xy 160.02 77.47) (xy 161.29 77.47)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "361aba99-3f73-4787-8b29-d68218dc5abb")
 	)
 	(wire
 		(pts
@@ -6564,7 +6558,7 @@
 	)
 	(wire
 		(pts
-			(xy 113.03 87.63) (xy 129.54 87.63)
+			(xy 133.35 80.01) (xy 149.86 80.01)
 		)
 		(stroke
 			(width 0)
@@ -6781,16 +6775,6 @@
 			(type default)
 		)
 		(uuid "72b0a33b-30c9-40d4-a938-3ff151d59eef")
-	)
-	(wire
-		(pts
-			(xy 171.45 77.47) (xy 173.99 77.47)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "732a79dc-3167-4d44-ad83-67920c5c9fc2")
 	)
 	(wire
 		(pts
@@ -7224,7 +7208,7 @@
 	)
 	(wire
 		(pts
-			(xy 129.54 76.2) (xy 135.89 76.2)
+			(xy 149.86 72.39) (xy 156.21 72.39)
 		)
 		(stroke
 			(width 0)
@@ -7834,7 +7818,7 @@
 	)
 	(wire
 		(pts
-			(xy 135.89 74.93) (xy 135.89 76.2)
+			(xy 156.21 71.12) (xy 156.21 72.39)
 		)
 		(stroke
 			(width 0)
@@ -7921,16 +7905,6 @@
 			(type default)
 		)
 		(uuid "b685bcd2-3621-4024-9654-4c356f68a24e")
-	)
-	(wire
-		(pts
-			(xy 173.99 77.47) (xy 176.53 77.47)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b6a080d5-e76a-47b9-a6d0-cab2bf63106b")
 	)
 	(wire
 		(pts
@@ -8284,16 +8258,6 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 78.74) (xy 160.02 77.47)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ce9abcb9-9754-4336-9948-292fd84300e3")
-	)
-	(wire
-		(pts
 			(xy 82.55 82.55) (xy 83.82 82.55)
 		)
 		(stroke
@@ -8394,7 +8358,7 @@
 	)
 	(polyline
 		(pts
-			(xy 149.86 58.42) (xy 149.86 111.76)
+			(xy 149.86 87.63) (xy 149.86 111.76)
 		)
 		(stroke
 			(width 0)
@@ -8421,16 +8385,6 @@
 			(type default)
 		)
 		(uuid "d52b5894-5a1e-4231-ad0b-94f252175c64")
-	)
-	(wire
-		(pts
-			(xy 129.54 76.2) (xy 129.54 78.74)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d5b4b0ee-10d7-49b6-bf42-7614411bcb1e")
 	)
 	(wire
 		(pts
@@ -8664,7 +8618,7 @@
 	)
 	(wire
 		(pts
-			(xy 125.73 76.2) (xy 129.54 76.2)
+			(xy 146.05 72.39) (xy 149.86 72.39)
 		)
 		(stroke
 			(width 0)
@@ -8944,7 +8898,7 @@
 	)
 	(wire
 		(pts
-			(xy 113.03 76.2) (xy 115.57 76.2)
+			(xy 133.35 72.39) (xy 135.89 72.39)
 		)
 		(stroke
 			(width 0)
@@ -9084,17 +9038,7 @@
 	)
 	(wire
 		(pts
-			(xy 129.54 86.36) (xy 129.54 87.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f8c75d38-2437-4e27-ab23-6e96de389981")
-	)
-	(wire
-		(pts
-			(xy 135.89 76.2) (xy 138.43 76.2)
+			(xy 156.21 72.39) (xy 158.75 72.39)
 		)
 		(stroke
 			(width 0)
@@ -9121,16 +9065,6 @@
 			(type default)
 		)
 		(uuid "f98f9209-1710-46bc-807f-a985271f466d")
-	)
-	(wire
-		(pts
-			(xy 129.54 87.63) (xy 129.54 88.9)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f9bf9cb7-8d25-4aa3-81c4-f6d109517d74")
 	)
 	(wire
 		(pts
@@ -9358,16 +9292,6 @@
 		)
 		(uuid "1e7b5d7a-0275-4819-a214-d526c491ca59")
 	)
-	(text "Boot Button"
-		(exclude_from_sim no)
-		(at 156.21 59.944 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "208a1dde-7e4e-4722-9cac-4ebd99935337")
-	)
 	(text "Programming Pins"
 		(exclude_from_sim no)
 		(at 77.724 45.974 0)
@@ -9400,7 +9324,7 @@
 	)
 	(text "Cycle through animations"
 		(exclude_from_sim no)
-		(at 119.38 95.504 0)
+		(at 119.38 89.408 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9450,7 +9374,7 @@
 	)
 	(global_label "RESET"
 		(shape output)
-		(at 138.43 76.2 0)
+		(at 158.75 72.39 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -9460,7 +9384,7 @@
 		)
 		(uuid "05c389c9-a3fa-46df-9315-1cc679dba3c4")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 147.1603 76.2 0)
+			(at 167.4803 72.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9488,28 +9412,6 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "BOOT"
-		(shape output)
-		(at 176.53 77.47 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "3b25e047-2cea-418d-b0fb-2806b307ca64")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 184.4138 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
 				(hide yes)
 			)
 		)
@@ -9708,28 +9610,6 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "BOOT"
-		(shape input)
-		(at 30.48 66.04 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "d2c4267a-cfbb-4aa8-b1d6-4dd965bee2d5")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 22.5962 66.04 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
 				(hide yes)
 			)
 		)
@@ -9996,74 +9876,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_Push")
-		(at 166.37 77.47 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "0a081ffd-aa5a-42f2-8b98-0388a433efa3")
-		(property "Reference" "SW2"
-			(at 166.37 69.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "SW_Push"
-			(at 166.37 72.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Button_Switch_SMD:SW_SPST_FSMSM"
-			(at 166.37 72.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 166.37 72.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Push button switch, generic, two pins"
-			(at 166.37 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "7ba6febd-12d7-40a8-a8f9-18c43d2e6d2c")
-		)
-		(pin "2"
-			(uuid "50b5374d-bdf7-4329-8230-9e960db3825c")
-		)
-		(instances
-			(project "WRadioLogo"
-				(path "/7a2b9b9a-ee19-46bd-9955-c01b3c27ee68"
-					(reference "SW2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "LED:WS2812B")
 		(at 331.47 128.27 0)
 		(unit 1)
@@ -10215,7 +10027,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 129.54 82.55 0)
+		(at 149.86 76.2 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -10224,7 +10036,7 @@
 		(fields_autoplaced yes)
 		(uuid "0b87c228-0ed2-41f5-a38d-018845c381f9")
 		(property "Reference" "C5"
-			(at 133.35 81.2799 0)
+			(at 153.67 74.9299 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10233,7 +10045,7 @@
 			)
 		)
 		(property "Value" "0.1uF"
-			(at 133.35 83.8199 0)
+			(at 153.67 77.4699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10242,7 +10054,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
-			(at 130.5052 86.36 0)
+			(at 150.8252 80.01 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10251,7 +10063,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 129.54 82.55 0)
+			(at 149.86 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10260,7 +10072,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 129.54 82.55 0)
+			(at 149.86 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10649,15 +10461,16 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 160.02 78.74 0)
+		(at 29.21 66.04 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "19bbb55c-069a-4463-9a76-8bf2a8b4ae79")
+		(fields_autoplaced yes)
+		(uuid "1c147020-2a5a-4fcb-86df-89766c033ac0")
 		(property "Reference" "#PWR023"
-			(at 160.02 85.09 0)
+			(at 22.86 66.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10666,15 +10479,16 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 160.02 82.55 0)
+			(at 25.4 66.0399 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify right)
 			)
 		)
 		(property "Footprint" ""
-			(at 160.02 78.74 0)
+			(at 29.21 66.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10683,7 +10497,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 160.02 78.74 0)
+			(at 29.21 66.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10692,7 +10506,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 160.02 78.74 0)
+			(at 29.21 66.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10701,7 +10515,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "cf8d88f5-e226-4202-b165-ae9affd03440")
+			(uuid "b2684534-4dd0-4e41-bc52-4fd208cea8f5")
 		)
 		(instances
 			(project "WRadioLogo"
@@ -12991,7 +12805,7 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 135.89 67.31 0)
+		(at 156.21 63.5 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -12999,7 +12813,7 @@
 		(dnp no)
 		(uuid "4e757f60-9ac8-4954-9d13-6a5be705ff6a")
 		(property "Reference" "#PWR022"
-			(at 135.89 71.12 0)
+			(at 156.21 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13008,7 +12822,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 135.89 62.992 0)
+			(at 156.21 59.436 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13016,7 +12830,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 135.89 67.31 0)
+			(at 156.21 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13025,7 +12839,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 135.89 67.31 0)
+			(at 156.21 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13034,7 +12848,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 135.89 67.31 0)
+			(at 156.21 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15172,72 +14986,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
-		(at 173.99 68.58 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "8790e977-6e85-44df-a712-0cb469d74606")
-		(property "Reference" "#PWR024"
-			(at 173.99 72.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3.3V"
-			(at 173.99 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 173.99 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 173.99 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 173.99 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "7491ba02-b0db-4fac-8465-b7677dc54782")
-		)
-		(instances
-			(project "WRadioLogo"
-				(path "/7a2b9b9a-ee19-46bd-9955-c01b3c27ee68"
-					(reference "#PWR024")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "LED:WS2812B")
 		(at 264.16 31.75 0)
 		(unit 1)
@@ -15740,76 +15488,6 @@
 			(project "WRadioLogo"
 				(path "/7a2b9b9a-ee19-46bd-9955-c01b3c27ee68"
 					(reference "D10")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 173.99 72.39 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "9f9ddd3b-fdc5-4f6d-a415-4c62b295c2fd")
-		(property "Reference" "R2"
-			(at 176.53 71.1199 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "10kΩ"
-			(at 176.53 73.6599 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
-			(at 172.212 72.39 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 173.99 72.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 173.99 72.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "94bbfd45-4455-4a01-a4f3-b17760ada1e6")
-		)
-		(pin "2"
-			(uuid "12121efe-1747-46d7-8915-d44aa9f0fe1d")
-		)
-		(instances
-			(project "WRadioLogo"
-				(path "/7a2b9b9a-ee19-46bd-9955-c01b3c27ee68"
-					(reference "R2")
 					(unit 1)
 				)
 			)
@@ -16328,7 +16006,7 @@
 	)
 	(symbol
 		(lib_id "Switch:SW_Push")
-		(at 120.65 76.2 0)
+		(at 140.97 72.39 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -16336,7 +16014,7 @@
 		(dnp no)
 		(uuid "b03f5563-0d54-4cf9-8007-0f8cf826ffa6")
 		(property "Reference" "SW1"
-			(at 120.65 68.58 0)
+			(at 140.97 64.77 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16344,7 +16022,7 @@
 			)
 		)
 		(property "Value" "SW_Push"
-			(at 120.65 71.12 0)
+			(at 140.97 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16352,7 +16030,7 @@
 			)
 		)
 		(property "Footprint" "Button_Switch_SMD:SW_SPST_FSMSM"
-			(at 120.396 65.532 0)
+			(at 140.716 61.722 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16361,7 +16039,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 120.65 71.12 0)
+			(at 140.97 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16370,7 +16048,7 @@
 			)
 		)
 		(property "Description" "Push button switch, generic, two pins"
-			(at 120.65 76.2 0)
+			(at 140.97 72.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18128,7 +17806,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 135.89 71.12 0)
+		(at 156.21 67.31 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -18137,7 +17815,7 @@
 		(fields_autoplaced yes)
 		(uuid "db91b378-b7c3-4391-a730-a18d009431aa")
 		(property "Reference" "R1"
-			(at 138.43 69.8499 0)
+			(at 158.75 66.0399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18146,7 +17824,7 @@
 			)
 		)
 		(property "Value" "10kΩ"
-			(at 138.43 72.3899 0)
+			(at 158.75 68.5799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18155,7 +17833,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
-			(at 134.112 71.12 90)
+			(at 154.432 67.31 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18164,7 +17842,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 135.89 71.12 0)
+			(at 156.21 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18173,7 +17851,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 135.89 71.12 0)
+			(at 156.21 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -19550,7 +19228,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 129.54 88.9 0)
+		(at 149.86 81.28 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -19558,7 +19236,7 @@
 		(dnp no)
 		(uuid "f94e6a24-4826-450a-909d-cc2378df8f7a")
 		(property "Reference" "#PWR021"
-			(at 129.54 95.25 0)
+			(at 149.86 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -19567,7 +19245,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 129.54 92.71 0)
+			(at 149.86 85.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -19575,7 +19253,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 129.54 88.9 0)
+			(at 149.86 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -19584,7 +19262,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 129.54 88.9 0)
+			(at 149.86 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -19593,7 +19271,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 129.54 88.9 0)
+			(at 149.86 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)

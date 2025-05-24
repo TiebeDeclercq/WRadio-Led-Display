@@ -2,7 +2,7 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : Main program body with persistent effect storage
   ******************************************************************************
   */
 /* USER CODE END Header */
@@ -12,6 +12,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ws2812b.h"
+#include "flash_storage.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -21,6 +22,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define SAVE_DELAY_MS    		2000    // Wait 2 seconds before saving to flash
+#define LONG_PRESS_TIME_MS      1000    // 1 second for long press detection
+#define BRIGHTNESS_LEVELS       5       // Number of brightness levels
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -36,8 +40,13 @@ DMA_HandleTypeDef hdma_tim3_ch1_trig;
 /* Global variables */
 static effect_mode_t currentMode = MODE_STATIC_LOGO;
 static uint32_t lastButtonPress = 0;
+static uint32_t lastModeChange = 0;
+static uint32_t buttonPressStartTime = 0;  // When button was pressed down
 static uint8_t buttonPressed = 0;
-
+static uint8_t buttonReleased = 1;
+static uint8_t modePendingSave = 0;
+static uint8_t brightnessLevel = 2;  // Start at medium brightness (0-4)
+static uint8_t brightnessLevels[BRIGHTNESS_LEVELS] = {50, 75, 100, 150, 200}; // Brightness values
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -47,6 +56,7 @@ static void MX_DMA_Init(void);
 static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
 void HandleButtonPress(void);
+void HandleFlashSave(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -88,8 +98,22 @@ int main(void)
 
   HAL_Delay(100);
 
+  // Initialize flash storage
+  Flash_Storage_Init();
+
+  // Load saved effect mode and brightness
+  currentMode = Flash_Storage_ReadMode();
+  brightnessLevel = Flash_Storage_ReadBrightnessLevel();
+
+  // Set the actual brightness value from the level
+  globalBrightness = brightnessLevels[brightnessLevel];
+
   // Initialize the WS2812B driver
   WS2812B_Init();
+
+  // Apply the loaded effect immediately
+  WS2812B_RunEffect(currentMode);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -99,9 +123,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  HandleButtonPress();
-	  WS2812B_RunEffect(currentMode);
-	  HAL_Delay(1);  /* Small delay for stability */
+    HandleButtonPress();
+    HandleFlashSave();      // Check if we need to save settings
+    WS2812B_RunEffect(currentMode);
+    HAL_Delay(1);  /* Small delay for stability */
 
   }
   /* USER CODE END 3 */
@@ -248,27 +273,75 @@ static void MX_GPIO_Init(void)
 
 void HandleButtonPress(void)
 {
-    /* Read button state (PA0) */
     uint8_t buttonState = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0);
+    uint32_t currentTime = HAL_GetTick();
 
-    /* Button press detection with debouncing */
-    if (buttonState == GPIO_PIN_SET && !buttonPressed) {
-        uint32_t currentTime = HAL_GetTick();
-        if (currentTime - lastButtonPress > 200) {  /* 200ms debounce */
+    if (buttonState == GPIO_PIN_SET && buttonReleased) {
+        // Button just pressed down
+        if (currentTime - lastButtonPress > 50) { // 50ms debounce
             buttonPressed = 1;
+            buttonReleased = 0;
+            buttonPressStartTime = currentTime;
             lastButtonPress = currentTime;
+        }
+    }
+    else if (buttonState == GPIO_PIN_RESET && !buttonReleased) {
+        // Button just released
+        buttonReleased = 1;
+        buttonPressed = 0;
 
-            /* Switch to next mode */
+        uint32_t pressDuration = currentTime - buttonPressStartTime;
+
+        if (pressDuration >= LONG_PRESS_TIME_MS) {
+            // LONG PRESS - Change brightness
+            brightnessLevel++;
+            if (brightnessLevel >= BRIGHTNESS_LEVELS) {
+                brightnessLevel = 0;  // Loop back to lowest
+            }
+
+            // Update global brightness
+            globalBrightness = brightnessLevels[brightnessLevel];
+
+            // Visual feedback - quick pulse to show new brightness
+            WS2812B_SetLogoColors();
+            HAL_Delay(100);
+            globalBrightness = brightnessLevels[brightnessLevel] * 1.5; // Brief bright pulse
+            WS2812B_SetLogoColors();
+            HAL_Delay(200);
+            globalBrightness = brightnessLevels[brightnessLevel]; // Back to normal
+
+            // Mark settings for saving
+            modePendingSave = 1;
+            lastModeChange = currentTime;
+
+        } else if (pressDuration >= 200) {
+            // SHORT PRESS - Change effect (with minimum 200ms press)
             currentMode++;
             if (currentMode >= MODE_COUNT) {
                 currentMode = MODE_STATIC_LOGO;
             }
 
-            /* Reset brightness for new mode */
-            WS2812B_SetLogoColors();  /* Reset to base logo */
+            // Mark mode for saving
+            modePendingSave = 1;
+            lastModeChange = currentTime;
+
+            // Reset to logo display for new mode
+            WS2812B_SetLogoColors();
         }
-    } else if (buttonState == GPIO_PIN_RESET) {
-        buttonPressed = 0;
+    }
+}
+
+void HandleFlashSave(void)
+{
+    /* Save to flash after SAVE_DELAY_MS milliseconds of no changes */
+    if (modePendingSave) {
+        uint32_t currentTime = HAL_GetTick();
+        if (currentTime - lastModeChange > SAVE_DELAY_MS) {
+            // Save the current mode and brightness level to flash
+            if (Flash_Storage_SaveSettings(currentMode, brightnessLevel) == HAL_OK) {
+                modePendingSave = 0;  // Clear the pending save flag
+            }
+        }
     }
 }
 
