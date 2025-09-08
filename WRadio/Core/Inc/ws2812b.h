@@ -24,8 +24,9 @@
 #include "main.h"
 
 /* User configuration */
-#define LED_COUNT	76
-#define WS2812B_BUFFER_SIZE (LED_COUNT * 24 + 50)
+#define LED_COUNT	76 //76 WRADIO
+#define WS2812B_RESET_LEN   50
+#define WS2812B_BUFFER_SIZE (LED_COUNT * 24 + WS2812B_RESET_LEN)
 
 /* WR Logo pixel ranges */
 #define W_START    0

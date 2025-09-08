@@ -25,11 +25,7 @@
 
 #define WS2812B_ONE_PULSE   38
 #define WS2812B_ZERO_PULSE  19
-#define WS2812B_RESET_LEN   50
 #define BASE_BRIGHTNESS     100
-
-#define LED_COUNT 76
-#define WS2812B_BUFFER_SIZE (LED_COUNT * 24 + 50)
 
 uint8_t ledBuffer[WS2812B_BUFFER_SIZE];
 uint32_t currentColors[LED_COUNT];
